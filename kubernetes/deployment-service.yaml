@@ -22,10 +22,17 @@ spec:
         image: navkkrnair/istio-customer:1.0
         imagePullPolicy: Always
         livenessProbe:
+          httpGet:
+            path: /actuator/health
+            port: 8080
+          initialDelaySeconds: 20
+          periodSeconds: 5
+          timeoutSeconds: 1
+        readinessProbe:
           exec:
             command:
-            - curl
-            - localhost:8080/actuator/health
+            - ls
+            - /var/ready
           initialDelaySeconds: 20
           periodSeconds: 5
           timeoutSeconds: 1
@@ -33,20 +40,12 @@ spec:
           - name: http
             containerPort: 8080   
             protocol: TCP
-          - containerPort: 8778
-            name: jolokia
+          - name: jolokia
+            containerPort: 8778
             protocol: TCP
-          - containerPort: 9779
-            name: prometheus
+          - name: prometheus
+            containerPort: 9779
             protocol: TCP
-        readinessProbe:
-          exec:
-            command:
-            - curl
-            - localhost:8080/actuator/health
-          initialDelaySeconds: 10
-          periodSeconds: 5
-          timeoutSeconds: 1
         securityContext:
           privileged: false
 ---
