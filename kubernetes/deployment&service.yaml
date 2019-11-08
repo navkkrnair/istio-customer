@@ -54,12 +54,14 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: customer
+  name: customer-service
   labels:
-    app: customer    
+    app: customer-service    
 spec:
   ports:
   - name: http
     port: 8080
+    targetPort: http
   selector:
-    app: customer          
+    app: customer
+    version: v1
