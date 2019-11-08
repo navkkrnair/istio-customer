@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: customer-deployment
+  labels:
+    app: customer-deployment
+    version: v1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: customer
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: customer
+        version: v1
+    spec:
+      containers:
+        image: navkkrnair/customer:1.0
+        imagePullPolicy: IfNotPresent
+        livenessProbe:
+          exec:
+            command:
+            - curl
+            - localhost:8080/actuator/health
+          initialDelaySeconds: 20
+          periodSeconds: 5
+          timeoutSeconds: 1
+        name: customer
+        ports:
+        - containerPort: 8080
+          name: http
+          protocol: TCP
+        - containerPort: 8778
+          name: jolokia
+          protocol: TCP
+        - containerPort: 9779
+          name: prometheus
+          protocol: TCP
+        readinessProbe:
+          exec:
+            command:
+            - curl
+            - localhost:8080/actuator/health
+          initialDelaySeconds: 10
+          periodSeconds: 5
+          timeoutSeconds: 1
+        securityContext:
+          privileged: false
