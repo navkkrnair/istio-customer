@@ -20,7 +20,7 @@ spec:
       containers:
       - name: customer-container
         image: navkkrnair/istio-customer:1.0
-        imagePullPolicy: IfNotPresent
+        imagePullPolicy: Always
         livenessProbe:
           exec:
             command:
