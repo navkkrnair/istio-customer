@@ -1,9 +1,9 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: customer-deployment
+  name: customer
   labels:
-    app: customer-deployment
+    app: customer
     version: v1
 spec:
   replicas: 1
@@ -18,7 +18,8 @@ spec:
         version: v1
     spec:
       containers:
-        image: navkkrnair/customer:1.0
+      - name: customer-container
+        image: navkkrnair/istio-customer:1.0
         imagePullPolicy: IfNotPresent
         livenessProbe:
           exec:
@@ -28,17 +29,16 @@ spec:
           initialDelaySeconds: 20
           periodSeconds: 5
           timeoutSeconds: 1
-        name: customer
         ports:
-        - containerPort: 8080
-          name: http
-          protocol: TCP
-        - containerPort: 8778
-          name: jolokia
-          protocol: TCP
-        - containerPort: 9779
-          name: prometheus
-          protocol: TCP
+          - name: http
+            containerPort: 8080   
+            protocol: TCP
+          - containerPort: 8778
+            name: jolokia
+            protocol: TCP
+          - containerPort: 9779
+            name: prometheus
+            protocol: TCP
         readinessProbe:
           exec:
             command:
@@ -54,9 +54,9 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: customer-service
+  name: customer
   labels:
-    app: customer-service    
+    app: customer    
 spec:
   ports:
   - name: http
