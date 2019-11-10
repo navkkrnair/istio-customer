@@ -48,19 +48,3 @@ spec:
             protocol: TCP
         securityContext:
           privileged: false
----
-
-apiVersion: v1
-kind: Service
-metadata:
-  name: customer
-  labels:
-    app: customer    
-spec:
-  ports:
-  - name: http
-    port: 8080
-    targetPort: http
-  selector:
-    app: customer
-    version: v1
