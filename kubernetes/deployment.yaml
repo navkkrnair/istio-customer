@@ -21,21 +21,6 @@ spec:
       - name: customer-container
         image: navkkrnair/istio-customer:1.0
         imagePullPolicy: Always
-        livenessProbe:
-          httpGet:
-            path: /actuator/health
-            port: 8080
-          initialDelaySeconds: 20
-          periodSeconds: 5
-          timeoutSeconds: 1
-        readinessProbe:
-          exec:
-            command:
-            - ls
-            - /var/ready
-          initialDelaySeconds: 20
-          periodSeconds: 5
-          timeoutSeconds: 1
         ports:
           - name: http
             containerPort: 8080   
