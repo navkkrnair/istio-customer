@@ -11,6 +11,9 @@ import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.servlet.handler.MappedInterceptor;
+
+import io.micrometer.core.instrument.MeterRegistry;
 
 @SpringBootApplication
 public class CustomerApplication
@@ -48,6 +51,13 @@ public class CustomerApplication
 	public RestTemplate restTemplate(RestTemplateBuilder restTemplateBuilder)
 	{
 		return restTemplateBuilder.build();
+	}
+
+	@Bean
+	public MappedInterceptor metricInterceptor(MeterRegistry registry)
+	{
+		return new MappedInterceptor(new String[]
+		{ "/**" }, new ToDoMetricsInterceptor(registry));
 	}
 
 }
