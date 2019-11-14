@@ -7,16 +7,18 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.HttpStatusCodeException;
-import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
+import io.micrometer.core.annotation.Timed;
 import io.opentracing.Tracer;
 
 @RestController
+@RequestMapping("/customer")
 public class CustomerController
 {
 	private static final String RESPONSE_STRING_FORMAT = "customer => %s\n";
@@ -36,7 +38,11 @@ public class CustomerController
 		this.restTemplate = restTemplate;
 	}
 
-	@RequestMapping("/")
+	@Timed(value = "customer.get.request", histogram = true, extraTags =
+	{ "version", "1.0" }, percentiles =
+	{ 0.95, 0.99 })
+
+	@GetMapping("/get")
 	public ResponseEntity<String> getCustomer(@RequestHeader("User-Agent") String userAgent,
 			@RequestHeader(value = "user-preference", required = false) String userPreference)
 	{

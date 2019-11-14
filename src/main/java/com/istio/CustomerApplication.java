@@ -6,6 +6,7 @@ import java.io.IOException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.actuate.autoconfigure.metrics.MeterRegistryCustomizer;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.boot.web.client.RestTemplateBuilder;
@@ -54,10 +55,19 @@ public class CustomerApplication
 	}
 
 	@Bean
+	public MeterRegistryCustomizer<MeterRegistry> meterRegistryCustomizer(MeterRegistry registry)
+	{
+		return registry1 ->
+		{
+			registry.config().commonTags("application", "customer-service");
+		};
+	}
+
+	@Bean
 	public MappedInterceptor metricInterceptor(MeterRegistry registry)
 	{
 		return new MappedInterceptor(new String[]
-		{ "/**" }, new ToDoMetricsInterceptor(registry));
+		{ "/customer/**" }, new ToDoMetricsInterceptor(registry));
 	}
 
 }
